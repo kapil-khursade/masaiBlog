@@ -1,0 +1,15 @@
+package com.example.demo.Beans;
+
+import java.time.LocalDateTime;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
+public class Blog {
+
+	private Integer blogId;
+	@Enumerated(EnumType.STRING) // VALUES : [ TECHNOLOGY / ART / SPORTS ]
+	private blogCategory category;
+	private String content;
+	private LocalDateTime timestamp;
+}

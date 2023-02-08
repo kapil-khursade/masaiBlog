@@ -1,0 +1,35 @@
+package com.example.demo.Beans;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+public class Blog {
+
+	private Integer blogId;
+	@Enumerated(EnumType.STRING) // VALUES : [ TECHNOLOGY / ART / SPORTS ]
+	private blogCategory category;
+	private String content;
+	private LocalDateTime timestamp;
+	
+	@ManyToOne
+	private User user;
+	
+	@OneToMany(mappedBy = "comments", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<Comments> comments;
+}

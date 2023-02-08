@@ -1,0 +1,24 @@
+package com.example.demo.Beans;
+
+import java.time.LocalDateTime;
+
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+public class Comments {
+	
+	private Integer commentId;
+	private String comment;
+	private LocalDateTime timestamp;
+	
+	@ManyToOne
+	private Blog blog;
+}

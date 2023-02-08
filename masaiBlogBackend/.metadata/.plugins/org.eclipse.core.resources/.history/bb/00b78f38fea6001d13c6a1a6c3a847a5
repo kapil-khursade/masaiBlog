@@ -1,0 +1,10 @@
+package com.example.demo.Beans;
+
+import java.time.LocalDateTime;
+
+public class Comments {
+	
+	private Integer commentId;
+	private String comment;
+	private LocalDateTime timestamp;
+}

@@ -1,0 +1,16 @@
+package com.example.demo.Services;
+
+public interface MasaiBlogServices {
+
+	
+}
+
+
+//1. Users can register themselves
+//2. Users can log into the application
+//3. The application allows users to publish blogs
+//4. The category should be of Enum type. There should be 3 categories(Technology, Art, Sports)
+//5. Users can write comments on other people’s blog but not on their own blog
+//6. Users can view all of their own blogs and blogs published by others 
+//7. Users can delete only their own published blogs
+//8. Users can delete any comment on their own blog

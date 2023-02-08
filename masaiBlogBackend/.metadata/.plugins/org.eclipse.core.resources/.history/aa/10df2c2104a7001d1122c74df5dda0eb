@@ -1,0 +1,77 @@
+package com.example.demo.Services;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.Beans.Blog;
+import com.example.demo.Beans.Comments;
+import com.example.demo.Beans.Output;
+import com.example.demo.Beans.User;
+import com.example.demo.DAO.BlogDAO;
+import com.example.demo.DAO.CommentDAO;
+import com.example.demo.DAO.UserDAO;
+import com.example.demo.Exceptions.MasaiBlogException;
+
+@Service
+public class MasaiBlogServicesImp implements MasaiBlogServices{
+	
+	@Autowired
+	private UserDAO udao;
+	@Autowired
+	private BlogDAO bdao;
+	@Autowired
+	private CommentDAO cdao;
+	
+	@Override
+	public ResponseEntity<Output> registerUser(User user) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		
+		User regiUser = udao.save(user);
+		
+		if(regiUser==null)throw new MasaiBlogException("User Cannot Be Registerd");
+		
+		return new ResponseEntity<Output>(Output("User Registerd Sucessfully", LocalDateTime.now()), );
+	}
+
+	@Override
+	public ResponseEntity<User> loginUser(String username, String password) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Output> publishBlog(Blog blog) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Output> commentsOnOthersBlog(Integer blogId, Comments comment) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<List<Blog>> viewAllBlogs() throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Output> deleteSlefBlog(Integer userId, Integer blogId) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Output> deleteSlefBlogComment(Integer userId, Integer blogId, Integer commentId)
+			throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
