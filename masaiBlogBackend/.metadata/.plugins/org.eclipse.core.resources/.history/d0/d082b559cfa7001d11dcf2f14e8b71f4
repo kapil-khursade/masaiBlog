@@ -1,0 +1,168 @@
+package com.example.demo.Services;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.Beans.Blog;
+import com.example.demo.Beans.Comments;
+import com.example.demo.Beans.Output;
+import com.example.demo.Beans.User;
+import com.example.demo.DAO.BlogDAO;
+import com.example.demo.DAO.CommentDAO;
+import com.example.demo.DAO.UserDAO;
+import com.example.demo.Exceptions.MasaiBlogException;
+
+@Service
+public class MasaiBlogServicesImp implements MasaiBlogServices{
+	
+	@Autowired
+	private UserDAO udao;
+	@Autowired
+	private BlogDAO bdao;
+	@Autowired
+	private CommentDAO cdao;
+	
+	@Override
+	public ResponseEntity<Output> registerUser(User user) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		if(user.getUsername()==null || user.getPassword()==null)throw new MasaiBlogException("User Cannot Be Registerd");
+				
+
+		User regiUser = udao.save(user);
+	
+		
+		if(regiUser==null)throw new MasaiBlogException("User Cannot Be Registerd");
+		
+		return new ResponseEntity<Output>(new Output("User Registerd Sucessfully", LocalDateTime.now()), HttpStatus.CREATED);
+	}
+
+	@Override
+	public ResponseEntity<User> loginUser(String username, String password) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		User user = udao.findByUsername(username);
+		if(user==null)throw new MasaiBlogException("Username Does Not Exist");
+		
+		if(!user.getPassword().equals(password))throw new MasaiBlogException("Wrong Password");
+		
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<Output> publishBlog(Blog blog) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		blog.setComments(new ArrayList<>());
+		blog.setTimestamp(LocalDateTime.now());
+		Optional<User> user = udao.findById(blog.getUser().getUserId());
+		if(user.isEmpty())throw new MasaiBlogException("User Does Not Exist");
+		
+		User correctUSer = user.get();
+		List<Blog> userBlog = correctUSer.getBlogs();
+		userBlog.add(blog);
+		correctUSer.setBlogs(userBlog);
+		
+		udao.save(correctUSer);
+		bdao.save(blog);
+		
+		
+		return new ResponseEntity<Output>(new Output("New Blog Added", LocalDateTime.now()), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<Output> commentsOnOthersBlog(Integer userId, Integer blogId, Comments comment) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		
+		Optional<Blog> blog = bdao.findById(blogId);
+		
+		if(blog.isEmpty())throw new MasaiBlogException("Blog Does Not Exist");
+		
+		Blog actualBlog = blog.get();
+		
+		if(userId==actualBlog.getUser().getUserId())throw new MasaiBlogException("You Cannot Comment On Your Own Blog");
+		
+		List<Comments> comList = actualBlog.getComments();
+		comList.add(comment);
+		actualBlog.setComments(comList);
+		
+		bdao.save(actualBlog);
+		
+		comment.setBlog(actualBlog);
+		cdao.save(comment);
+		
+		
+		return new ResponseEntity<Output>(new Output("New Blog Comment Added", LocalDateTime.now()), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<Blog>> viewAllBlogs() throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		
+		List<Blog> allBlogs = bdao.findAll();
+		
+		if(allBlogs.isEmpty())throw new MasaiBlogException("Blog Does Not Exist");
+
+		return new ResponseEntity<List<Blog>>(allBlogs, HttpStatus.ACCEPTED);
+	}
+
+	@Override
+	public ResponseEntity<Output> deleteSlefBlog(Integer userId, Integer blogId) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		Optional<Blog> blog = bdao.findById(blogId);
+		if(blog.isEmpty())throw new MasaiBlogException("Blog Does Not Exist");
+		Blog actualBlog = blog.get();
+		
+		if(actualBlog.getUser().getUserId() != userId)throw new MasaiBlogException("You Can Delete Only Your Blog");
+		
+		bdao.delete(actualBlog);
+		
+		return new ResponseEntity<Output>(new Output("Blog Deleted Succesfully", LocalDateTime.now()), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<Output> deleteSlefBlogComment(Integer userId, Integer blogId, Integer commentId)
+			throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		
+		Optional<Blog> blog = bdao.findById(blogId);
+		if(blog.isEmpty())throw new MasaiBlogException("Blog Does Not Exist");
+		Blog actualBlog = blog.get();
+		
+		if(actualBlog.getUser().getUserId() != userId)throw new MasaiBlogException("You Can Delete Comments Form Only Your Blog");
+		
+		List<Comments> commentList = actualBlog.getComments();
+		
+		Optional<Comments> com = cdao.findById(commentId);
+		
+		if(com.isEmpty())throw new MasaiBlogException("Comment Does Not Exist");
+		
+		Comments actualComm = com.get();
+		
+		if(!commentList.remove(actualComm))throw new MasaiBlogException("Comment Does Not Exist");
+		
+		cdao.delete(actualComm);
+		
+		actualBlog.setComments(commentList);
+		bdao.save(actualBlog);
+		
+		return new ResponseEntity<Output>(new Output("Comment Deleted Succesfully", LocalDateTime.now()), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<Blog>> viewBlogsByCategory(String category) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		
+		List<Blog> byCategory = bdao.findByCategory(category);
+		
+		if(byCategory.isEmpty())throw new MasaiBlogException("Blog Does Not Exist");
+		
+		
+		return new ResponseEntity<List<Blog>>(byCategory, HttpStatus.OK);
+	}
+
+}

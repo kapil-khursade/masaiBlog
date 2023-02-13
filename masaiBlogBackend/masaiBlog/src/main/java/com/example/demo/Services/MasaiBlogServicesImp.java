@@ -32,8 +32,11 @@ public class MasaiBlogServicesImp implements MasaiBlogServices{
 	@Override
 	public ResponseEntity<Output> registerUser(User user) throws MasaiBlogException {
 		// TODO Auto-generated method stub
-		user.setBlogs(new ArrayList<>());
+		if(user.getUsername()==null || user.getPassword()==null)throw new MasaiBlogException("User Cannot Be Registerd");
+				
+
 		User regiUser = udao.save(user);
+	
 		
 		if(regiUser==null)throw new MasaiBlogException("User Cannot Be Registerd");
 		
@@ -55,6 +58,7 @@ public class MasaiBlogServicesImp implements MasaiBlogServices{
 	public ResponseEntity<Output> publishBlog(Blog blog) throws MasaiBlogException {
 		// TODO Auto-generated method stub
 		blog.setComments(new ArrayList<>());
+		blog.setTimestamp(LocalDateTime.now());
 		Optional<User> user = udao.findById(blog.getUser().getUserId());
 		if(user.isEmpty())throw new MasaiBlogException("User Does Not Exist");
 		
@@ -64,8 +68,6 @@ public class MasaiBlogServicesImp implements MasaiBlogServices{
 		correctUSer.setBlogs(userBlog);
 		
 		udao.save(correctUSer);
-		bdao.save(blog);
-		
 		
 		return new ResponseEntity<Output>(new Output("New Blog Added", LocalDateTime.now()), HttpStatus.OK);
 	}
@@ -73,7 +75,7 @@ public class MasaiBlogServicesImp implements MasaiBlogServices{
 	@Override
 	public ResponseEntity<Output> commentsOnOthersBlog(Integer userId, Integer blogId, Comments comment) throws MasaiBlogException {
 		// TODO Auto-generated method stub
-		
+		comment.setTimestamp(LocalDateTime.now());
 		Optional<Blog> blog = bdao.findById(blogId);
 		
 		if(blog.isEmpty())throw new MasaiBlogException("Blog Does Not Exist");
@@ -86,11 +88,8 @@ public class MasaiBlogServicesImp implements MasaiBlogServices{
 		comList.add(comment);
 		actualBlog.setComments(comList);
 		
-		bdao.save(actualBlog);
-		
 		comment.setBlog(actualBlog);
 		cdao.save(comment);
-		
 		
 		return new ResponseEntity<Output>(new Output("New Blog Comment Added", LocalDateTime.now()), HttpStatus.OK);
 	}
@@ -159,6 +158,21 @@ public class MasaiBlogServicesImp implements MasaiBlogServices{
 		
 		
 		return new ResponseEntity<List<Blog>>(byCategory, HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<Blog>> viewMyBlogs(Integer useId) throws MasaiBlogException {
+		// TODO Auto-generated method stub
+		
+		Optional<User> user = udao.findById(useId);
+		
+		if(user.isEmpty())throw new MasaiBlogException("User Does Not Exist");
+		
+		List<Blog> usersBlogs = user.get().getBlogs();
+		
+		if(usersBlogs.isEmpty())throw new MasaiBlogException("No Blogs Exist");
+		
+		return new ResponseEntity<List<Blog>>(usersBlogs, HttpStatus.OK);
 	}
 
 }

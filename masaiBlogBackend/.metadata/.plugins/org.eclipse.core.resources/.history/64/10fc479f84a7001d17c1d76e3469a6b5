@@ -1,0 +1,5 @@
+package com.example.demo.swagerConfig;
+
+public class SpringFoxConfig {
+
+}

@@ -1,6 +1,7 @@
 package com.example.demo.Beans;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,12 +32,14 @@ public class Blog {
 	private Integer blogId;
 	@Enumerated(EnumType.STRING) // VALUES : [ TECHNOLOGY / ART / SPORTS ]
 	private blogCategory category;
+	private String title;
 	private String content;
 	private LocalDateTime timestamp;
 	
 	@ManyToOne
+	@JsonIgnore
 	private User user;
 	
 	@OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private List<Comments> comments;
+	private List<Comments> comments = new ArrayList<Comments>();
 }

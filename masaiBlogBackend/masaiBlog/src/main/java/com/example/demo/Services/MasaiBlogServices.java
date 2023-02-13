@@ -17,6 +17,7 @@ public interface MasaiBlogServices {
 	public ResponseEntity<Output> publishBlog(Blog blog)throws MasaiBlogException;
 	public ResponseEntity<Output> commentsOnOthersBlog(Integer userId,Integer blogId, Comments comment)throws MasaiBlogException;
 	public ResponseEntity<List<Blog>> viewAllBlogs()throws MasaiBlogException;
+	public ResponseEntity<List<Blog>> viewMyBlogs(Integer useId)throws MasaiBlogException;
 	public ResponseEntity<List<Blog>> viewBlogsByCategory(String category)throws MasaiBlogException;
 	public ResponseEntity<Output> deleteSlefBlog(Integer userId, Integer blogId)throws MasaiBlogException;
 	public ResponseEntity<Output> deleteSlefBlogComment(Integer userId, Integer blogId, Integer commentId)throws MasaiBlogException;

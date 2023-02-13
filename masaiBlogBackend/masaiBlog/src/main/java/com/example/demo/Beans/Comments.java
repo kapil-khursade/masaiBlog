@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,5 +27,6 @@ public class Comments {
 	private LocalDateTime timestamp;
 	
 	@ManyToOne
+	@JsonIgnore
 	private Blog blog;
 }

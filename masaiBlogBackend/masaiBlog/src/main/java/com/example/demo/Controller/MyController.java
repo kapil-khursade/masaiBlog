@@ -2,13 +2,15 @@ package com.example.demo.Controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +22,6 @@ import com.example.demo.DTO.LoginDTO;
 import com.example.demo.Exceptions.MasaiBlogException;
 import com.example.demo.Services.MasaiBlogServices;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/masaiBlog")
@@ -30,44 +31,48 @@ public class MyController {
 	private MasaiBlogServices mbser;
 	
 	@PostMapping("/user/register")
-	public ResponseEntity<Output> registerUser(@RequestBody User user)throws MasaiBlogException{
-		
-		return mbser.registerUser(user);
+	public ResponseEntity<Output> registerUserHandler(@Valid @RequestBody User users)throws MasaiBlogException{
+		return mbser.registerUser(users);
 	}
 	
 	@PostMapping("/user/login")
-	public ResponseEntity<User> loginUser(@RequestBody LoginDTO logindto)throws MasaiBlogException{
+	public ResponseEntity<User> loginUserHandler(@RequestBody LoginDTO logindto)throws MasaiBlogException{
 		return mbser.loginUser(logindto.getUsername(), logindto.getPassword());
+	}
+	
+	@GetMapping("/user/blogs/{userId}")
+	public ResponseEntity<List<Blog>> viewMyBlogsHandler(@PathVariable("userId") Integer useId) throws MasaiBlogException{
+		return mbser.viewMyBlogs(useId);
 	}
 	
 	
 	@GetMapping("/user/blogs")
-	public ResponseEntity<List<Blog>> viewAllBlogs()throws MasaiBlogException{
+	public ResponseEntity<List<Blog>> viewAllBlogsHandler()throws MasaiBlogException{
 		return mbser.viewAllBlogs();
 	}
 	
 	@DeleteMapping("/user/blog/{blogId}/{userId}")
-	public ResponseEntity<Output> deleteSlefBlog(@PathVariable("userId") Integer userId, @PathVariable("blogId") Integer blogId)throws MasaiBlogException{
+	public ResponseEntity<Output> deleteSlefBlogHandler(@PathVariable("userId") Integer userId, @PathVariable("blogId") Integer blogId)throws MasaiBlogException{
 		return mbser.deleteSlefBlog(userId, blogId);
 	}
 	
 	@DeleteMapping("/user/blog/{blogId}/{userId}/{commentId}")
-	public ResponseEntity<Output> deleteSlefBlogComment(@PathVariable("userId") Integer userId, @PathVariable("blogId") Integer blogId, @PathVariable("commentId") Integer commentId)throws MasaiBlogException{
+	public ResponseEntity<Output> deleteSlefBlogCommentHandler(@PathVariable("userId") Integer userId, @PathVariable("blogId") Integer blogId, @PathVariable("commentId") Integer commentId)throws MasaiBlogException{
 		return mbser.deleteSlefBlogComment(userId, blogId, commentId);
 	}
 	
 	@PostMapping("/user/blog")
-	public ResponseEntity<Output> publishBlog(@RequestBody Blog blog)throws MasaiBlogException{
+	public ResponseEntity<Output> publishBlogHandler(@RequestBody Blog blog)throws MasaiBlogException{
 		return mbser.publishBlog(blog);
 	}
 	
 	@GetMapping("/user/blog/{category}")
-	public ResponseEntity<List<Blog>> viewBlogsByCategory(@PathVariable("category") String category)throws MasaiBlogException{
+	public ResponseEntity<List<Blog>> viewBlogsByCategoryHandler(@PathVariable("category") String category)throws MasaiBlogException{
 		return mbser.viewBlogsByCategory(category);
 	}
 	
 	@PostMapping("user/{blogId}/{userId}")
-	public ResponseEntity<Output> commentsOnOthersBlog(@PathVariable("userId") Integer userId,@PathVariable("blogId") Integer blogId, @RequestBody Comments comment)throws MasaiBlogException{
+	public ResponseEntity<Output> commentsOnOthersBlogHandler(@PathVariable("userId") Integer userId,@PathVariable("blogId") Integer blogId, @RequestBody Comments comment)throws MasaiBlogException{
 		return mbser.commentsOnOthersBlog(userId, blogId, comment);
 	}
 	

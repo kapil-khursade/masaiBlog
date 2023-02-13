@@ -1,0 +1,55 @@
+/* Navabar */
+#navbar{
+    width: 100vw;
+    height: 10vh;
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    display: flex;
+    justify-content: space-between;
+    background-color: aquamarine;
+}
+
+#navbar>img{
+    height: 100%;
+}
+
+#navbar>div{
+    display: flex;
+    width: 40vw;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#navbar>div>div{
+    width: 110px;
+    height: 30px;
+    background-color: black;
+    color: white;
+    border-radius: 30px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+/* MAin */
+main{
+    position: fixed;
+    top: 10vh;
+    left: 0%;
+}
+#Banner{
+    width: 100vw;
+    height: 60vh;
+}
+
+#Banner>div{
+    font-size: 60px;
+    margin-top: 60px;
+    margin-left: 25px;
+    width: max-content;
+    font-family: ;
+}
+
+
+/* cursive */
